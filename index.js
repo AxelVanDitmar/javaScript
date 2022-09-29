@@ -11,10 +11,6 @@ class producto {
     sumarIva() {
         return this.precio = this.precio * 1, 21
     }
-    vendido() {
-        this.stock = this.stock - 1
-    }
-
 }
 
 const producto1 = new producto(1, "primer vuelo", 15000, 6);
@@ -27,81 +23,40 @@ const producto4 = new producto(4, "tour full", 35000, 2);
 productos.push(producto4)
 
 
-
-
-
-function mostrarProductos() {
-    alert("Bienvenido a Skymaster Mendoza, nuestros tours son los siguientes")
-    productos.forEach(producto => {
-        alert(`
-            ${producto.nombre}
-            $${producto.precio}
-        `)
-    })
-}
-
-function mostrarCarrito() {
-    alert("Usted tiene los siguientes tours en su carrito:")
-    carrito.forEach(producto => {
-        alert(`
-            ${producto.nombre}
-            $${producto.precio}
-        `)
-    })
-
-    let continuar = Number(prompt("Que quiere hacer: 1-confirmar compra, 2-vaciar carrito"))
-    switch (continuar) {
-        case 1:
-            let total = carrito.reduce((acc, producto) => acc + producto.precio, 0)
-            let iva = total * 1.21
-            alert(`El total de su compra es de $${iva}`)
-            break;
-        case 2:
-            carrito.splice(0, carrito.length)
-            alert("Su carrito se vacio con exito!")
-            console.log(carrito)
-            break;
+//Funciones
+function agregarAlCarrito(producto) {
+    let buscarProducto = carrito.find(item => item.id === producto.id)
+    if (buscarProducto !== undefined) {
+      buscarProducto.precio = buscarProducto.precio + producto.precio
+      buscarProducto.cantidad = buscarProducto.cantidad + 1
+    } else {
+      carrito.push({
+        id: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        img: producto.img,
+        cantidad: 1
+      })
     }
-}
-
-function comprar() {
-    let compra = Number(prompt("Elija el producto que quiera: 1-primer vuelo, 2-tour potrerillos, 3-tour aconcagua, 4-tour full"))
-
-    while (compra !== 0) {
-        let resultado
-        switch (compra) {
-            case 1:
-                resultado = productos.find((producto) => producto.id === compra)
-                carrito.push(resultado)
-
-                break;
-            case 2:
-                resultado = productos.find((producto) => producto.id === compra)
-                carrito.push(resultado)
-
-                break;
-            case 3:
-                resultado = productos.find((producto) => producto.id === compra)
-                carrito.push(resultado)
-
-                break;
-            case 4:
-                resultado = productos.find((producto) => producto.id === compra)
-                carrito.push(resultado)
-
-                break;
-
-            default:
-                alert("Ingrese un producto de la lista por favor")
-
-        }
-        compra = Number(prompt("Elija el tour que quiera: 1-primer vuelo, 2-tour potrerillos, 3-tour aconcagua, 4-tour full o 0-salir"))
-
-    }
-}
+  }
 
 
+//DOM
+productos.forEach((producto) => {
+    let cards = document.querySelector(".cards")
+    let div = document.createElement("div")
+    div.innerHTML = `
+    <img src="${producto.img}">
+    <h3>${producto.nombre}</h3>
+    <p>$${producto.precio}</p>
+ <button id=${producto.id} class="btn">Agregar al Carrito</button>
+  `
+  div.className = "card"
+  cards.append(div)
+  const boton = document.getElementById(producto.id)
+  boton.addEventListener("click", () => agregarAlCarrito(producto))
+});
 
-mostrarProductos()
-comprar()
-mostrarCarrito()
+//Muestro los tours que se encuentran en el carrito
+const carritoBtn = document.getElementById("carrito")
+carritoBtn.addEventListener("click", () => console.log(carrito));
