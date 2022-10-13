@@ -14,6 +14,11 @@ vaciarCarrito.addEventListener("click", () => {
   carrito.length = 0;
   actualizarCarrito();
   localStorage.removeItem("carrito");
+  Toastify({
+    text: "Se vacio el carrito!",
+    className: "toast_red",
+    duration: 2500,
+  }).showToast();
 });
 
 //Modal
@@ -47,28 +52,34 @@ const producto1 = new producto(
   15000, 
   6,
   "img/p92enVuelo.jpg");
-productos.push(producto1)
+
 const producto2 = new producto(
   2, 
   "tour potrerillos", 
   15000, 
   4,
   "img/p92perfil.jpg");
-productos.push(producto2)
+
 const producto3 = new producto(
   3, 
   "tour Aconcagua", 
   25000, 
   3,
   "img/skymasterPrendido.jpg");
-productos.push(producto3)
+
 const producto4 = new producto(
   4, 
   "tour full", 
   35000, 
   2,
   "img/stearman.jpg");
-productos.push(producto4)
+
+  productos.push(
+    producto1,
+    producto2,
+    producto3,
+    producto4,
+    );
 
 //Obtengo el localstorage al inciar
 document.addEventListener("DOMContentLoaded", () => {
@@ -101,13 +112,14 @@ function agregarAlCarrito(producto) {
   function actualizarCarrito() {
     carritoCards.innerHTML = "";
     carrito.forEach((producto) => {
+      const { id, nombre, precio, img } = producto;
       let div = document.createElement("div");
       div.innerHTML = `
-        <img src="${producto.img}">
-        <h3>${producto.nombre}</h3>
+        <img src="${img}">
+        <h3>${nombre}</h3>
         <p>Cantidad:${producto.cantidad}</p>
-        <p>$${producto.precio}</p>
-        <button id="eliminar${producto.id}" class="btn eliminar">Eliminar</button>
+        <p>$${precio}</p>
+        <button id="eliminar${id}" class="btn eliminar">Eliminar</button>
         `;
       localStorage.setItem("carrito", JSON.stringify(carrito));
       carritoCards.append(div);
@@ -125,11 +137,17 @@ function agregarAlCarrito(producto) {
     let indice = carrito.indexOf(buscado);
     carrito.splice(indice, 1);
     actualizarCarrito();
+    Toastify({
+      text: "Se elimino el producto del carrito!",
+      className: "toast_red",
+      duration: 2500,
+    }).showToast();
   }
 
 
-//DOM
+//DOM renderizo productos
 productos.forEach((producto) => {
+  const { id, nombre, precio, img } = producto;
   let div = document.createElement("div");
     div.innerHTML = `
     <img src="${producto.img}">
