@@ -1,0 +1,25 @@
+[
+    {
+      "id": 1,
+      "nombre": "Primer vuelo",
+      "precio": 15000,
+      "img": "img/p92enVuelo.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "tour potrerillos",
+      "precio": 15000,
+      "img": "img/p92perfil.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "tour Aconcagua",
+      "precio": 25000,
+      "img": "img/skymasterPrendido.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "tour full",
+      "precio": 35000,
+      "img": "img/stearman.jpg"
+    }]

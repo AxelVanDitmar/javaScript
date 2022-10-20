@@ -32,54 +32,6 @@ cerrarModal.addEventListener("click", (e) => {
 });
 
 let carrito = [];
-const productos = [];
-
-class producto {
-    constructor(id, nombre, precio, stock) {
-        this.id = id
-        this.nombre = nombre
-        this.precio = precio
-        this.stock = stock
-    }
-    sumarIva() {
-        return this.precio = this.precio * 1, 21
-    }
-}
-
-const producto1 = new producto(
-  1, 
-  "primer vuelo", 
-  15000, 
-  6,
-  "img/p92enVuelo.jpg");
-
-const producto2 = new producto(
-  2, 
-  "tour potrerillos", 
-  15000, 
-  4,
-  "img/p92perfil.jpg");
-
-const producto3 = new producto(
-  3, 
-  "tour Aconcagua", 
-  25000, 
-  3,
-  "img/skymasterPrendido.jpg");
-
-const producto4 = new producto(
-  4, 
-  "tour full", 
-  35000, 
-  2,
-  "img/stearman.jpg");
-
-  productos.push(
-    producto1,
-    producto2,
-    producto3,
-    producto4,
-    );
 
 //Obtengo el localstorage al inciar
 document.addEventListener("DOMContentLoaded", () => {
@@ -146,20 +98,58 @@ function agregarAlCarrito(producto) {
 
 
 //DOM renderizo productos
-productos.forEach((producto) => {
-  const { id, nombre, precio, img } = producto;
-  let div = document.createElement("div");
-    div.innerHTML = `
-    <img src="${producto.img}">
-    <h3>${producto.nombre}</h3>
-    <p>$${producto.precio}</p>
- <button id=${producto.id} class="btn">Agregar al Carrito</button>
-  `;
-  div.className = "card";
-  cards.append(div);
+const renderCards = async () => {
+  try {
+    let response = await fetch("json/productos.json");
+    let data = await response.json();
+    //* Le llegan los productos por parametros
+    data.forEach(({ id, nombre, precio, img }) => {
+      //* destructuring dentro de la arrow
+      let div = document.createElement("div");
+      div.innerHTML = `
+      <img src="${img}">
+      <h3>${nombre}</h3>
+      <p>$${precio}</p>
+      <button id=${id} class="btn">Agregar al Carrito</button>
+      `;
+      div.className = "card";
+      cards.append(div);
 
-  const boton = document.getElementById(producto.id);
-  boton.addEventListener("click", (e) => {
-    agregarAlCarrito(producto);
-  });
-});
+      const boton = document.getElementById(id);
+      boton.addEventListener("click", (e) => {
+        agregarAlCarrito({
+          id,
+          nombre,
+          precio,
+          img,
+        });
+        Toastify({
+          text: "Se agrego el producto al carrito!",
+          className: "toast",
+          duration: 2500,
+        }).showToast();
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+renderCards(); //* LLamo en el inicio con los productos
+
+// Search
+const buscador = async () => {
+  try {
+    let response = await fetch("json/productos.json");
+    let data = await response.json();
+    seachBar.addEventListener("keyup", (e) => {
+      let filteredProductos = data.filter((product) => {
+        return product.nombre.match(e.target.value); //* busca en cada producto, esta searchbar en KEY SENSITIVE
+      });
+      cards.innerHTML = null; //* Borra todas las cartas
+      renderCards(filteredProductos); //* Llama a la funcion render con los productos filtrados
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
